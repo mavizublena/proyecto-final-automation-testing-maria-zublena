@@ -1,7 +1,6 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 from pages.login_page import LoginPage
+from pages.inventory_page import InventoryPage
+from pages.cart_page import CartPage
 
 
 def test_carrito(driver):
@@ -11,26 +10,27 @@ def test_carrito(driver):
     login_page.abrir_pagina()
     login_page.login("standard_user", "secret_sauce")
 
+    # Crear el objeto InventoryPage
+    inventory_page = InventoryPage(driver)
+
     # Agregar un producto al carrito
-    boton_agregar = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "add-to-cart-sauce-labs-backpack"))
-    )
-    boton_agregar.click()
+    inventory_page.agregar_producto("Sauce Labs Backpack")
 
     # Verificar que el carrito tenga un producto
-    cantidad_carrito = WebDriverWait(driver, 10).until(
-        EC.visibility_of_element_located((By.CLASS_NAME, "shopping_cart_badge"))
-    )
-    assert cantidad_carrito.text == "1"
+    assert inventory_page.obtener_contador_carrito() == "1"
 
     # Navegar al carrito
-    carrito = WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.CLASS_NAME, "shopping_cart_link"))
-    )
-    carrito.click()
-
-    # Esperar hasta que navegue al carrito
-    WebDriverWait(driver, 10).until(EC.url_contains("/cart.html"))
+    inventory_page.ir_al_carrito()
 
     # Verificar que se haya navegado al carrito
-    assert "/cart.html" in driver.current_url
+    cart_page = CartPage(driver)
+    assert cart_page.obtener_titulo() == "Your Cart"
+    
+    # Verificar el nombre y precio del producto en el carrito
+    nombre_producto = cart_page.obtener_nombre_producto()
+    precio_producto = cart_page.obtener_precio_producto()
+    
+    assert nombre_producto == "Sauce Labs Backpack"
+    assert precio_producto == 29.99
+    
+    

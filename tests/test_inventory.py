@@ -1,5 +1,6 @@
-from selenium.webdriver.common.by import By
+
 from pages.login_page import LoginPage 
+from pages.inventory_page import InventoryPage
 
 
 def test_inventory_page(driver):
@@ -10,17 +11,16 @@ def test_inventory_page(driver):
     login_page.login("standard_user", "secret_sauce")
     
     # Verificar que el título sea correcto
-    titulo = driver.title
-    assert titulo == "Swag Labs"
+    inventory_page = InventoryPage(driver)
+    assert inventory_page.obtener_titulo() == "Products"
 
-    # Verificar que haya productos
-    productos = driver.find_elements(By.CLASS_NAME, "inventory_item")
+    # Verificar que haya productos   
+    productos = inventory_page.obtener_productos()
     assert len(productos) > 0
-
+    
     # Listar nombre y precio del primer producto
-    primer_producto = productos[0]
-    nombre_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_name").text
-    precio_producto = primer_producto.find_element(By.CLASS_NAME, "inventory_item_price").text
+    nombre_producto = inventory_page.obtener_nombre_primer_producto()
+    precio_producto = inventory_page.obtener_precio_primer_producto()
 
     print(f"Nombre: {nombre_producto}, Precio: {precio_producto}")
 
@@ -28,9 +28,7 @@ def test_inventory_page(driver):
     assert precio_producto == "$29.99"
 
     # Verificar la existencia del menú hamburguesa
-    menu_hamburguesa = driver.find_element(By.ID, "react-burger-menu-btn")
-    assert menu_hamburguesa.is_displayed()
+    assert inventory_page.menu_visible()
 
     # Verificar la existencia del filtro de ordenamiento
-    filtro_ordenamiento = driver.find_element(By.CLASS_NAME, "product_sort_container")
-    assert filtro_ordenamiento.is_displayed()
+    assert inventory_page.filtro_visible()

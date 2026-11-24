@@ -1,6 +1,6 @@
-from selenium.webdriver.common.by import By
-from pages.login_page import LoginPage
 
+from pages.login_page import LoginPage
+from pages.inventory_page import InventoryPage
 
 def test_login_exitoso(driver):
 
@@ -13,11 +13,12 @@ def test_login_exitoso(driver):
 
     # Validar el inicio de sesión
     assert "/inventory.html" in driver.current_url
+    
+    # Crear el objeto InventoryPage
+    inventory_page = InventoryPage(driver)
 
     # Validar el logo
-    logo = driver.find_element(By.CLASS_NAME, "app_logo")
-    assert logo.text == "Swag Labs"
+    assert inventory_page.obtener_logo() == "Swag Labs"
 
     # Validar el título
-    titulo = driver.find_element(By.CSS_SELECTOR, "[data-test='title']")
-    assert titulo.text == "Products"
+    assert inventory_page.obtener_titulo() == "Products"
