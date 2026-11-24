@@ -1,20 +1,14 @@
 from selenium.webdriver.common.by import By
+from pages.login_page import LoginPage 
 
 
 def test_inventory_page(driver):
 
-    # Login
-    driver.get("https://www.saucedemo.com/")
-
-    # Ingresar credenciales válidas
-    username_input = driver.find_element(By.ID, "user-name")
-    password_input = driver.find_element(By.ID, "password")
-    login_button = driver.find_element(By.ID, "login-button")
-
-    username_input.send_keys("standard_user")
-    password_input.send_keys("secret_sauce")
-    login_button.click()
-
+    # Iniciar sesión
+    login_page = LoginPage(driver)
+    login_page.abrir_pagina()
+    login_page.login("standard_user", "secret_sauce")
+    
     # Verificar que el título sea correcto
     titulo = driver.title
     assert titulo == "Swag Labs"

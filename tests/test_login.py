@@ -1,19 +1,15 @@
 from selenium.webdriver.common.by import By
+from pages.login_page import LoginPage
 
 
 def test_login_exitoso(driver):
 
-    # Abrir la página de inicio de sesión
-    driver.get("https://www.saucedemo.com/")
+    # Crear el objeto LoginPage
+    login_page = LoginPage(driver)
 
-    # Ingresar credenciales válidas
-    username_input = driver.find_element(By.ID, "user-name")
-    password_input = driver.find_element(By.ID, "password")
-    login_button = driver.find_element(By.ID, "login-button")
-
-    username_input.send_keys("standard_user")
-    password_input.send_keys("secret_sauce")
-    login_button.click()
+    # Abrir la página e iniciar sesión
+    login_page.abrir_pagina()
+    login_page.login("standard_user", "secret_sauce")
 
     # Validar el inicio de sesión
     assert "/inventory.html" in driver.current_url
@@ -25,4 +21,3 @@ def test_login_exitoso(driver):
     # Validar el título
     titulo = driver.find_element(By.CSS_SELECTOR, "[data-test='title']")
     assert titulo.text == "Products"
-    
