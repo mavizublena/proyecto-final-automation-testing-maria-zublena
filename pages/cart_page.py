@@ -9,6 +9,7 @@ class CartPage:
     NOMBRE_PRODUCTO = (By.CLASS_NAME, "inventory_item_name")
     PRECIO_PRODUCTO = (By.CLASS_NAME, "inventory_item_price")
     TITULO = (By.CSS_SELECTOR, "[data-test='title']")
+    BOTON_CHECKOUT = (By.ID, "checkout")
 
     def __init__(self, driver):
         self.driver = driver
@@ -29,3 +30,8 @@ class CartPage:
         return self.wait.until(
             EC.visibility_of_element_located(self.TITULO)
         ).text
+        
+    def hacer_click_checkout(self):
+       self.wait.until(
+        EC.element_to_be_clickable(self.BOTON_CHECKOUT)
+       ).click()   
