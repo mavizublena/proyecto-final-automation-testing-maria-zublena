@@ -58,6 +58,4 @@ def test_checkout_exitoso(driver):
     
     # Verificar el mensaje de confirmación
     assert checkout_page.obtener_mensaje_confirmacion() == "Thank you for your order!"
-    
-    
-    
+   # assert checkout_page.obtener_mensaje_confirmacion() == "Compra exitosa"
