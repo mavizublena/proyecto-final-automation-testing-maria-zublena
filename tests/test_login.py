@@ -2,30 +2,44 @@ import pytest
 from pages.login_page import LoginPage
 from pages.inventory_page import InventoryPage
 from utils.reader import read_users_csv
+from utils.logger import logger
 
 
 @pytest.mark.parametrize("data", read_users_csv())
 def test_login(driver, data):
 
-    login_page = LoginPage(driver)
-    login_page.abrir_pagina()
+    try:
+        logger.info("Iniciando prueba de login")
 
-    login_page.login(data["usuario"], data["password"])
+        login_page = LoginPage(driver)
+        login_page.abrir_pagina()
+        logger.info("Pagina abierta correctamente")
 
-    if data["tipo_usuario"] == "True":
+        login_page.login(data["usuario"], data["password"])
+        logger.info(f"Credenciales ingresadas para: {data['usuario']}")
 
-        assert "/inventory.html" in driver.current_url
+        if data["tipo_usuario"] == "True":
 
-        inventory_page = InventoryPage(driver)
+            assert "/inventory.html" in driver.current_url
 
-        assert inventory_page.obtener_logo() == "Swag Labs"
-        assert inventory_page.obtener_titulo() == "Products"
+            inventory_page = InventoryPage(driver)
 
-    elif data["tipo_usuario"] == "False":
+            assert inventory_page.obtener_logo() == "Swag Labs"
+            assert inventory_page.obtener_titulo() == "Products"
 
-        error = login_page.obtener_mensaje_error()
+            logger.info("Login exitoso. Logo y titulo verificados")
 
-        assert error == data["mensaje_error"]
+        elif data["tipo_usuario"] == "False":
 
-    else:
-        pytest.fail("Tipo de usuario no válido en el CSV")
+            error = login_page.obtener_mensaje_error()
+
+            assert error == data["mensaje_error"]
+
+            logger.info(f"Mensaje de error validado: {error}")
+
+        else:
+            pytest.fail("Tipo de usuario no valido en el CSV")
+
+    except Exception:
+        logger.exception("Error durante la prueba de login")
+        raise
