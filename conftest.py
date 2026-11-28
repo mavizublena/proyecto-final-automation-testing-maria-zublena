@@ -4,6 +4,7 @@ import pytest_html
 import pathlib
 import base64
 from datetime import datetime
+import os
 
 
 @pytest.fixture
@@ -45,3 +46,11 @@ def pytest_runtest_makereport(item, call):
             report.extras = [
                 pytest_html.extras.png(imagen, name="Screenshot")
             ]
+            
+@pytest.fixture
+def base_url():
+    return "https://reqres.in/api"
+
+@pytest.fixture
+def headers():
+    return {"x-api-key": os.environ["REQRES_API_KEY"]}
